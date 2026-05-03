@@ -2,6 +2,7 @@ pipeline {
     agent any
 
     stages {
+
         stage('Checkout') {
             steps {
                 checkout scm
@@ -15,9 +16,15 @@ pipeline {
             }
         }
 
-        stage('Run Training Script') {
+        stage('Train Model') {
             steps {
                 bat 'python train.py'
+            }
+        }
+
+        stage('Archive Results') {
+            steps {
+                archiveArtifacts artifacts: 'results.json', fingerprint: true
             }
         }
     }
