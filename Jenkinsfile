@@ -24,7 +24,7 @@ pipeline {
 
         stage('Archive Artifacts') {
             steps {
-                archiveArtifacts artifacts: 'best_model.pkl, experiment_results.json', fingerprint: true
+                archiveArtifacts artifacts: 'best_model.pkl, experiment_log.json', fingerprint: true
             }
         }
     }

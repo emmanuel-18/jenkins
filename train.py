@@ -1,4 +1,6 @@
 import json
+import os
+from datetime import datetime
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
@@ -7,6 +9,7 @@ from sklearn.metrics import accuracy_score
 import joblib
 
 print("Loading dataset...")
+
 data = load_iris()
 X = data.data
 y = data.target
@@ -22,8 +25,8 @@ models = {
 
 results = {}
 
-best_model_name = None
-best_accuracy = 0
+best_model = None
+best_acc = 0
 
 print("Training models...")
 
@@ -32,24 +35,44 @@ for name, model in models.items():
     preds = model.predict(X_test)
     acc = accuracy_score(y_test, preds)
 
-    print(f"{name} accuracy: {acc:.4f}")
+    print(f"{name}: {acc:.4f}")
 
     results[name] = acc
 
-    if acc > best_accuracy:
-        best_accuracy = acc
-        best_model_name = name
+    if acc > best_acc:
+        best_acc = acc
+        best_model = name
         joblib.dump(model, "best_model.pkl")
 
-print("Saving results...")
+print("Saving experiment data...")
 
-output = {
+experiment = {
+    "timestamp": datetime.now().isoformat(),
     "models": results,
-    "best_model": best_model_name,
-    "best_accuracy": best_accuracy
+    "best_model": best_model,
+    "best_accuracy": best_acc
 }
 
-with open("experiment_results.json", "w") as f:
-    json.dump(output, f)
+# Load existing history if exists
+history_file = "experiment_log.json"
 
-print("Done.")
+if os.path.exists(history_file):
+    with open(history_file, "r") as f:
+        history = json.load(f)
+else:
+    history = []
+
+history.append(experiment)
+
+with open(history_file, "w") as f:
+    json.dump(history, f, indent=2)
+
+print("Experiment logged.")
+
+# 🧠 MODEL GATE (NEW IMPORTANT PART)
+THRESHOLD = 0.90
+
+if best_acc < THRESHOLD:
+    raise Exception(f"Model rejected! Accuracy {best_acc:.2f} < {THRESHOLD}")
+
+print("Model passed quality gate.")
