@@ -2,15 +2,22 @@ pipeline {
     agent any
 
     stages {
-        stage('Clone') {
+        stage('Checkout') {
             steps {
                 checkout scm
             }
         }
 
-        stage('Run') {
+        stage('Setup') {
             steps {
-                echo 'Webhook test working! (2)'
+                bat 'python --version'
+                bat 'pip install -r requirements.txt'
+            }
+        }
+
+        stage('Run Training Script') {
+            steps {
+                bat 'python train.py'
             }
         }
     }
