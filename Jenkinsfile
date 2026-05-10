@@ -32,7 +32,7 @@ pipeline {
             steps {
                 bat 'pip install fastapi uvicorn'
                 bat 'start /B uvicorn app:app --host 0.0.0.0 --port 8000'
-                bat 'timeout /t 5'
+                bat 'ping 127.0.0.1 -n 6 > nul'
             }
         }
 
