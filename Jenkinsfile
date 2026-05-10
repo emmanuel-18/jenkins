@@ -53,9 +53,22 @@ pipeline {
         stage('Validate API Output') {
             steps {
                 bat '''
-                python -c "import json; f=open('response.json'); data=json.load(f); f.close(); \
-assert 'prediction' in data, 'API FAILED: missing prediction'; \
-print('API TEST PASSED:', data)"
+                python -c "
+        import json
+
+        with open('response.json', 'r') as f:
+            text = f.read().strip()
+
+        if not text or 'Internal Server Error' in text:
+            raise Exception('API FAILED: server error or empty response')
+
+        data = json.loads(text)
+
+        if 'prediction' not in data:
+            raise Exception('API FAILED: missing prediction field')
+
+        print('API TEST PASSED:', data)
+        "
                 '''
             }
         }
