@@ -23,4 +23,6 @@ def home():
 def predict(input_data: InputData):
     data = np.array(input_data.features).reshape(1, -1)
     prediction = model.predict(data)
-    return {"prediction": prediction.tolist()}
+    return {
+        "prediction": prediction.tolist()
+        }
