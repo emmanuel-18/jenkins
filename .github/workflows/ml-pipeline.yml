@@ -31,3 +31,22 @@ jobs:
           python -c "import os; \
           assert os.path.exists('best_model.pkl'), 'Model not created!'; \
           print('Model exists ✔')"
+      
+      - name: Check accuracy threshold
+        run: |
+          python -c "import json; \
+          metrics = json.load(open('metrics.json')); \
+          assert metrics['accuracy'] >= 0.9; \
+          print(f'Accuracy {metrics['accuracy']} meets threshold ✔')"
+
+      - name: Upload model artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: model
+          path: best_model.pkl
+
+      - name: Validate model exists
+        run: |
+          python -c "import os; \
+          assert os.path.exists('best_model.pkl'), 'Model not found in artifact!'; \
+          print('Model artifact exists ✔')"
