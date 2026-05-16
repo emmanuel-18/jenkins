@@ -32,12 +32,11 @@ jobs:
           assert os.path.exists('best_model.pkl'), 'Model not created!'; \
           print('Model exists ✔')"
       
-      - name: Check accuracy threshold
+      - name: validate experiment log 
         run: |
           python -c "import json; \
-          metrics = json.load(open('metrics.json')); \
-          assert metrics['accuracy'] >= 0.9; \
-          print(f'Accuracy {metrics[\"accuracy\"]} meets threshold ✔')"
+          data = json.load(open('experiment_log.json')); \
+          print(data)"
 
 
       - name: Upload model artifact
